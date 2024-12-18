@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Games</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-image: url('https://www.example.com/background.jpg'); /* Replace with your own background image */
+            background-size: cover;
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Header */
+        header {
+            background-color: rgba(255, 235, 59, 0.8);  /* Transparent yellow */
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #ff5722;
+            margin: 0;
+        }
+
+        /* Navigation */
+        nav {
+            background-color: rgba(76, 175, 80, 0.8);  /* Transparent green */
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin: 10px;
+        }
+
+        nav ul li a {
+            color: #fff;
+            font-size: 1.5em;
+            text-decoration: none;
+        }
+
+        nav ul li a:hover {
+            color: #ffeb3b;
+        }
+
+        /* Sections */
+        section {
+            padding: 30px;
+            margin-top: 20px;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.8);  /* Semi-transparent white */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        /* Buttons */
+        button.game-button {
+            background-color: #ff5722;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            font-size: 1.2em;
+            cursor: pointer;
+            margin: 10px;
+            border-radius: 50px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        button.game-button:hover {
+            background-color: #e64a19;
+            transform: scale(1.1);
+        }
+
+        button.game-button:active {
+            transform: scale(0.95);
+        }
+
+        /* Memory Game Styles */
+        .card {
+            width: 100px;
+            height: 100px;
+            margin: 10px;
+            display: inline-block;
+            background-color: #f0f8ff;
+            border: 2px solid #ff5722;
+            border-radius: 8px;
+            cursor: pointer;
+            position: relative;
+            font-size: 2em;
+            color: transparent;
+            text-align: center;
+        }
+
+        .card.flipped {
+            background-color: #ff5722;
+            color: white;
+        }
+
+        /* Tic Tac Toe Styles */
+        #tic-tac-toe-container {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px);
+            gap: 10px;
+            margin: auto;
+        }
+
+        #tic-tac-toe-container div {
+            width: 100px;
+            height: 100px;
+            background-color: #ffeb3b;
+            text-align: center;
+            line-height: 100px;
+            font-size: 2em;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+
+        /* Puzzle Styles */
+        .puzzle-piece {
+            width: 100px;
+            height: 100px;
+            margin: 10px;
+            display: inline-block;
+            background-color: #ff5722;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        #drop-zone {
+            background-color: #ffe0b2;
+            border: 2px dashed #ff5722;
+            margin-top: 20px;
+        }
+
+        /* Footer */
+        footer {
+            background-color: rgba(255, 235, 59, 0.8);
+            padding: 10px;
+            margin-top: 20px;
+            color: #ff5722;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Learn and Play</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="#quiz">Quiz</a></li>
+            <li><a href="#memory-game">Memory Game</a></li>
+            <li><a href="#tic-tac-toe">Tic Tac Toe</a></li>
+            <li><a href="#puzzle">Puzzle</a></li>
+            <li><a href="#sudoku">Sudoku</a></li>
+        </ul>
+    </nav>
+    <section id="quiz">
+        <h2>Quiz</h2>
+        <div id="question"></div>
+        <div id="answers"></div>
+        <div id="result"></div>
+    </section>
+    <section id="memory-game">
+        <h2>Memory Game</h2>
+        <div id="cards-container"></div>
+    </section>
+    <section id="tic-tac-toe">
+        <h2>Tic Tac Toe</h2>
+        <div id="tic-tac-toe-container"></div>
+    </section>
+    <section id="puzzle">
+        <h2>Puzzle</h2>
+        <div id="puzzle-pieces"></div>
+        <div id="drop-zone">Drop Zone</div>
+    </section>
+    <section id="sudoku">
+        <h2>Sudoku</h2>
+        <button class="game-button" onclick="redirectToSudoku()">Play Sudoku</button>
+    </section>
+    <footer>
+        <p>Learn and Play - Bringing Fun and Education Together!</p>
+    </footer>
+    <script>
+        // Add all JavaScript from your games here.
+        const questions = [
+            { question: 'What is 2 + 2?', options: ['4', '3', '5'], correctAnswer: '4' },
+            { question: 'What is the color of the sky?', options: ['Red', 'Blue', 'Green'], correctAnswer: 'Blue' },
+            { question: 'How many fingers do we have?', options: ['5', '6', '10'], correctAnswer: '10' }
+        ];
+
+        let currentQuestionIndex = 0;
+
+        function loadQuestion() {
+            const questionContainer = document.getElementById('question');
+            const answersContainer = document.getElementById('answers');
+            const currentQuestion = questions[currentQuestionIndex];
+
+            questionContainer.textContent = currentQuestion.question;
+            answersContainer.innerHTML = '';
+
+            currentQuestion.options.forEach(option => {
+                const button = document.createElement('button');
+                button.textContent = option;
+                button.onclick = () => checkAnswer(option);
+                answersContainer.appendChild(button);
+            });
+        }
+
+        function checkAnswer(answer) {
+            const result = document.getElementById('result');
+            const currentQuestion = questions[currentQuestionIndex];
+
+            if (answer === currentQuestion.correctAnswer) {
+                result.innerHTML = '<p>Correct!</p>';
+            } else {
+                result.innerHTML = '<p>Oops! Try again.</p>';
+            }
+
+            currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
+            setTimeout(loadQuestion, 2000);
+        }
+
+        loadQuestion();
+
+        // Memory Game functionality
+        let cards = [];
+        let flippedCards = [];
+        let matchedCards = [];
+
+        function generateMemoryCards() {
+            const container = document.getElementById('cards-container');
+            container.innerHTML = '';
+            cards = ['1', '2', '3', '4', '1', '2', '3', '4'];
+            cards = cards.sort(() => 0.5 - Math.random());
+
+            cards.forEach(value => {
+                const cardElement = document.createElement('div');
+                cardElement.classList.add('card');
+                cardElement.setAttribute('data-value', value);
+                cardElement.onclick = flipCard;
+                container.appendChild(cardElement);
+            });
+        }
+
+        function flipCard() {
+            if (flippedCards.length < 2) {
+                this.classList.add('flipped');
+                flippedCards.push(this);
+
+                if (flippedCards.length === 2) {
+                    checkMatch();
+                }
+            }
+        }
+
+        function checkMatch() {
+            const [card1, card2] = flippedCards;
+            if (card1.getAttribute('data-value') === card2.getAttribute('data-value')) {
+                matchedCards.push(card1, card2);
+                flippedCards = [];
+                if (matchedCards.length === cards.length) {
+                    alert('You won the game!');
+                }
+            } else {
+                setTimeout(() => {
+                    flippedCards.forEach(card => card.classList.remove('flipped'));
+                    flippedCards = [];
+                }, 1000);
+            }
+        }
+
+        generateMemoryCards();
+
+        // Tic Tac Toe functionality
+        let board = Array(9).fill(null);
+        let currentPlayer = 'X';
+
+        function createTicTacToeBoard() {
+            const container = document.getElementById('tic-tac-toe-container');
+            container.innerHTML = '';
+            board = Array(9).fill(null);
+
+            board.forEach((_, index) => {
+                const cell = document.createElement('div');
+                cell.onclick = () => handleCellClick(index, cell);
+                container.appendChild(cell);
+            });
+        }
+
+        function handleCellClick(index, cell) {
+            if (!board[index]) {
+                board[index] = currentPlayer;
+                cell.textContent = currentPlayer;
+
+                if (checkWinner(board, currentPlayer)) {
+                    alert(`${currentPlayer} wins!`);
+                    setTimeout(createTicTacToeBoard, 2000);
+                } else {
+                    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                }
+            }
+        }
+
+        function checkWinner(board, player) {
+            const winningCombinations = [
+                [0, 1, 2],
+                [3, 4, 5],
+                [6, 7, 8],
+                [0, 3, 6],
+                [1, 4, 7],
+                [2, 5, 8],
+                [0, 4, 8],
+                [2, 4, 6]
+            ];
+
+            return winningCombinations.some(combination => 
+                combination.every(index => board[index] === player)
+            );
+        }
+
+        createTicTacToeBoard();
+
+        // Puzzle functionality
+        function dragStart(event) {
+            event.dataTransfer.setData("text", event.target.textContent);
+        }
+
+        function dropPiece(event) {
+            const droppedPiece = event.dataTransfer.getData("text");
+            alert(`You dropped piece ${droppedPiece}!`);
+        }
+
+        const puzzlePieces = ['1', '2', '3', '4'];
+        const puzzleContainer = document.getElementById('puzzle-pieces');
+        const dropZone = document.getElementBy
